@@ -1,0 +1,39 @@
+{% assign project_posts = site.categories[project.slug] %}
+{% if project_posts %}
+  {% assign project_posts = project_posts | where: 'lang', include.lang | where: 'panel_list', true | sort: 'panel_order' %}
+{% endif %}
+<section class="home-project">
+  <header class="home-project__header">
+    <div class="home-project__info">
+      {% if project.icon %}
+      <span class="home-project__icon"><i class="{{ project.icon }}" aria-hidden="true"></i></span>
+      {% endif %}
+      <div>
+        <h3 class="home-project__title">{{ project.label }} · {{ project.subtitle }}</h3>
+        <p class="home-project__summary">{{ project.home_summary }}</p>
+      </div>
+    </div>
+    <div class="home-project__actions">
+      <a class="home-project__cta" href="/{{ project.slug }}/">Browse Projects</a>
+      {% if project.demo_link %}
+      <a class="home-project__cta home-project__cta--secondary" href="{{ project.demo_link }}" target="_blank" rel="noopener">观看演示</a>
+      {% endif %}
+    </div>
+  </header>
+
+  {% if project_posts and project_posts != empty %}
+  <ul class="home-project__posts">
+    {% for post in project_posts limit:3 %}
+    <li class="home-project__post">
+      <a href="{{ post.url }}">{{ post.title }}</a>
+      <span class="home-project__meta">
+        {{ post.date | date: '%Y-%m-%d' }}
+        {% if post.tags and post.tags != empty %} · {{ post.tags | array_to_sentence_string }}{% endif %}
+      </span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="text-muted">To be updated.</p>
+  {% endif %}
+</section>

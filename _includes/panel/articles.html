@@ -1,0 +1,44 @@
+{% assign collections = page.panel_collections %}
+{% assign manual_pages = page.panel_pages %}
+{% assign heading = page.panel_heading | default: 'Column articles' %}
+
+{% assign current_lang = page.lang | default: site.lang %}
+
+{% assign has_manual = manual_pages and manual_pages != empty %}
+{% assign has_collections = collections and collections != empty %}
+
+{% if has_manual or has_collections %}
+<section class="panel-card card border-0 shadow-sm mt-3">
+  <div class="card-body">
+    <h3 class="h6 mb-3">{{ heading }}</h3>
+
+    {% if has_collections %}
+      {% for coll in collections %}
+        {% assign docs = site[coll] | where_exp: 'doc', 'doc.panel_list != false' | where: 'lang', current_lang %}
+        {% assign docs = docs | sort: 'panel_order' %}
+        {% assign coll_label = site.data.panel.collections[coll] | default: coll %}
+        {% if docs and docs != empty %}
+          {% if collections.size > 1 %}
+            <p class="text-muted small mb-2">{{ coll_label }}</p>
+          {% endif %}
+          <ul class="list-unstyled small mb-3">
+            {% for doc in docs %}
+              <li class="mb-1"><a href="{{ doc.url }}">{{ doc.title }}</a></li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    {% if has_manual %}
+      <ul class="list-unstyled small mb-0">
+        {% for entry in manual_pages %}
+          {% assign entry_title = entry.title | default: entry.name | default: entry %}
+          {% assign entry_url = entry.url | default: entry %}
+          <li class="mb-1"><a href="{{ entry_url }}">{{ entry_title }}</a></li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+</section>
+{% endif %}

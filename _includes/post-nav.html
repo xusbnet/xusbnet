@@ -1,0 +1,53 @@
+<!-- 自定义上一篇/下一篇导航：排除标记 rss_exclude: true 的文章 -->
+
+{% assign previous_label = site.data.locales[include.lang].post.button.previous %}
+{% assign next_label = site.data.locales[include.lang].post.button.next %}
+
+{%- comment %} 保留主语言文章，同时允许当前页面（即使 rss_exclude: true）参与导航 {%- endcomment %}
+{%- assign nav_posts = site.posts | where_exp: 'post', 'post.rss_exclude != true or post.url == page.url' -%}
+{%- assign current_index = nil -%}
+
+{%- for nav_post in nav_posts -%}
+  {%- if nav_post.url == page.url -%}
+    {%- assign current_index = forloop.index0 -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{% assign prev_post = nil %}
+{% assign next_post = nil %}
+
+{%- if current_index != nil -%}
+  {%- assign prev_index = current_index | plus: 1 -%}
+  {%- assign next_index = current_index | minus: 1 -%}
+
+  {%- if prev_index < nav_posts.size -%}
+    {%- assign prev_post = nav_posts[prev_index] -%}
+  {%- endif -%}
+
+  {%- if next_index >= 0 -%}
+    {%- assign next_post = nav_posts[next_index] -%}
+  {%- endif -%}
+{%- endif -%}
+
+<nav class="post-navigation d-flex justify-content-between" aria-label="Post Navigation">
+  {% if prev_post %}
+    <a href="{{ prev_post.url | relative_url }}" class="btn btn-outline-primary" aria-label="{{ previous_label }}">
+      <p>{{ prev_post.title }}</p>
+    </a>
+  {% else %}
+    <div class="btn btn-outline-primary disabled" aria-label="{{ previous_label }}">
+      <p>-</p>
+    </div>
+  {% endif %}
+
+  {% if next_post %}
+    <a href="{{ next_post.url | relative_url }}" class="btn btn-outline-primary" aria-label="{{ next_label }}">
+      <p>{{ next_post.title }}</p>
+    </a>
+  {% else %}
+    <div class="btn btn-outline-primary disabled" aria-label="{{ next_label }}">
+      <p>-</p>
+    </div>
+  {% endif %}
+</nav>

@@ -1,0 +1,62 @@
+---
+layout: compress
+permalink: /feed.xml
+---
+
+{% assign feed_limit = site.feed.limit | default: 0 | plus: 0 %}
+
+{% capture source %}
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>{{ '/' | absolute_url }}</id>
+  <title>{{ site.title | xml_escape }}</title>
+  <subtitle>{{ site.description | xml_escape }}</subtitle>
+  <updated>{{ site.time | date_to_xmlschema }}</updated>
+  <author>
+    <name>{{ site.social.name }}</name>
+    <uri>{{ '/' | absolute_url }}</uri>
+  </author>
+  <link rel="self" type="application/atom+xml" href="{{ page.url | absolute_url }}"/>
+  <link rel="alternate" type="text/html" hreflang="{{ site.alt_lang | default: site.lang }}"
+        href="{{ '/' | absolute_url }}"/>
+  <generator uri="https://jekyllrb.com/" version="{{ jekyll.version }}">Jekyll</generator>
+  <rights> © {{ 'now' | date: '%Y' }} {{ site.social.name }} </rights>
+  <icon>{{ site.baseurl }}/assets/img/favicons/favicon.ico</icon>
+  <logo>{{ site.baseurl }}/assets/img/favicons/favicon-96x96.png</logo>
+
+{% comment %}只在输出 RSS 时排除标记了 rss_exclude: true 的文章{% endcomment %}
+{% assign rss_posts = site.posts | where_exp: 'post', 'post.rss_exclude != true' %}
+
+{% if feed_limit > 0 %}
+{% assign rss_posts = rss_posts | slice: 0, feed_limit %}
+{% endif %}
+
+{% for post in rss_posts %}
+  {% assign post_absolute_url = post.url | absolute_url %}
+  <entry>
+    <title>{{ post.title | xml_escape }}</title>
+    <link href="{{ post_absolute_url }}" rel="alternate" type="text/html" title="{{ post.title | xml_escape }}" />
+    <published>{{ post.date | date_to_xmlschema }}</published>
+  {% if post.last_modified_at %}
+    <updated>{{ post.last_modified_at | date_to_xmlschema }}</updated>
+  {% else %}
+    <updated>{{ post.date | date_to_xmlschema }}</updated>
+  {% endif %}
+    <id>{{ post_absolute_url }}</id>
+    <content type="text/html" src="{{ post_absolute_url }}" />
+    <author>
+      <name>{{ post.author | default: site.social.name }}</name>
+    </author>
+
+  {% if post.categories %}
+    {% for category in post.categories %}
+    <category term="{{ category | xml_escape }}" />
+    {% endfor %}
+  {% endif %}
+
+  <summary>{% include post-description.html max_length=400 %}</summary>
+
+  </entry>
+{% endfor %}
+</feed>
+{% endcapture %}
+{{ source | replace: '&', '&amp;' }}

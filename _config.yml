@@ -1,0 +1,239 @@
+# The Site Configuration
+
+# Import the theme
+theme: jekyll-theme-chirpy
+
+# The language of the webpage › http://www.lingoes.net/en/translator/langcode.htm
+# If it has the same name as one of the files in folder `_data/locales`, the layout language will also be changed,
+# otherwise, the layout language will use the default value of 'en'.
+lang: en
+
+# Change to your timezone › https://kevinnovak.github.io/Time-Zone-Picker
+timezone: Asia/Shanghai
+
+# jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
+# ↓ --------------------------
+
+title: XUSB
+# it will display as the subtitle
+tagline: TECHNOLOGY. IP. GROWTH.
+
+description: >-
+  Built for Universal Compatibility | X = Explore the Potential of Universal Devices
+
+# Fill in the protocol & hostname for your site.
+# E.g. 'https://username.github.io', note that it does not end with a '/'.
+url: "https://xusb.net"
+
+github:
+  username: xusbnet
+
+social:
+  name: XUSB
+  email: contact@xusb.net
+  links:
+    - https://github.com/xusbnet
+    - mailto:contact@xusb.net
+
+# Site Verification Settings
+webmaster_verifications:
+  google:
+  bing:
+  alexa:
+  yandex:
+  baidu:
+  facebook:
+
+# ↑ --------------------------
+# The end of `jekyll-seo-tag` settings
+
+# Web Analytics Settings
+analytics:
+  google:
+    id:
+  goatcounter:
+    id:
+  umami:
+    id:
+    domain:
+  matomo:
+    id:
+    domain:
+  cloudflare:
+    id:
+  fathom:
+    id:
+
+# Page views settings
+pageviews:
+  provider:
+
+# Prefer color scheme setting.
+#
+# Note: Keep empty will follow the system prefer color by default,
+# and there will be a toggle to switch the theme between dark and light
+# on the bottom left of the sidebar.
+#
+# Available options:
+#
+#     light — Use the light color scheme
+#     dark — Use the dark color scheme
+#
+theme_mode:
+
+# The CDN endpoint for media resources.
+# Notice that once it is assigned, the CDN url
+# will be added to all media resources (site avatar, posts' images, audio and video files) paths starting with '/'
+#
+# e.g. 'https://cdn.com'
+cdn:
+
+# the avatar on sidebar, support local or CORS resources
+avatar: /assets/img/favicons/web-app-manifest-512x512.png
+
+
+# The URL of the site-wide social preview image used in SEO `og:image` meta tag.
+# It can be overridden by a customized `page.image` in front matter.
+social_preview_image: assets/img/favicons/web-app-manifest-512x512.png
+
+# boolean type, the global switch for TOC in posts.
+toc: true
+
+comments:
+  provider:
+  disqus:
+    shortname:
+  utterances:
+    repo:
+    issue_term:
+  giscus:
+    repo:
+    repo_id:
+    category:
+    category_id:
+    mapping:
+    strict:
+    input_position:
+    lang:
+    reactions_enabled:
+
+assets:
+  self_host:
+    enabled:
+    env:
+
+pwa:
+  enabled: true
+  cache:
+    enabled: true
+    deny_paths:
+
+paginate: 10
+
+plugins:
+  - jekyll-paginate
+  - jekyll-seo-tag
+  - jekyll-archives
+  - jekyll-sitemap
+  - jekyll-include-cache
+
+feed:
+  limit: 50
+
+# The base URL of your site
+baseurl: ""
+
+# ------------ The following options are not recommended to be modified ------------------
+
+kramdown:
+  footnote_backlink: "&#8617;&#xfe0e;"
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: highlight
+    span:
+      line_numbers: false
+    block:
+      line_numbers: true
+      start_line: 1
+
+collections:
+  tabs:
+    output: true
+    sort_by: order
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      comments: true
+      toc: true
+      permalink: /posts/:title/
+  - scope:
+      path: _drafts
+    values:
+      comments: false
+  - scope:
+      path: ""
+      type: tabs
+    values:
+      layout: page
+      permalink: /:title/
+      panel: articles
+  - scope:
+      path: _posts/project-1
+    values:
+      panel: articles
+      panel_includes:
+        - toc
+  - scope:
+      path: _posts/project-2
+    values:
+      panel: articles
+      panel_includes:
+        - toc
+  - scope:
+      path: _posts/project-3
+    values:
+      panel: articles
+      panel_includes:
+        - toc
+  
+  - scope:
+      path: assets/404.html
+    values:
+      panel: none
+      toc: false
+
+sass:
+  style: compressed
+
+compress_html:
+  clippings: all
+  comments: all
+  endings: all
+  profile: false
+  blanklines: false
+  ignore:
+    envs: []
+
+exclude:
+  - "*.gem"
+  - "*.gemspec"
+  - docs
+  - tools
+  - README.md
+  - LICENSE
+  - purgecss.js
+  - "*.config.js"
+  - "package*.json"
+
+jekyll-archives:
+  enabled: [categories, tags]
+  layouts:
+    category: category
+    tag: tag
+  permalinks:
+    tag: /tags/:name/
+    category: /categories/:name/

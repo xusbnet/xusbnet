@@ -1,0 +1,31 @@
+{% assign project = include.project %}
+{% assign project_posts = site.categories[project.slug] %}
+{% if project_posts %}
+  {% assign project_posts = project_posts | where: 'lang', include.lang | where: 'panel_list', true | sort: 'panel_order' %}
+{% endif %}
+<section class="project-hero">
+  <span class="project-hero__label">
+    {% if project.icon %}<i class="{{ project.icon }}" aria-hidden="true"></i>{% endif %}
+    {{ project.label }}
+  </span>
+  <h1 class="project-hero__title">{{ project.subtitle }}</h1>
+  <p class="project-hero__lead">{{ project.hero_intro }}</p>
+</section>
+
+{% if project_posts and project_posts != empty %}
+<div class="project-list">
+  {% for post in project_posts %}
+  <article class="project-summary">
+    <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
+    <p>{{ post.summary | default: post.description | default: post.excerpt }}</p>
+    <p class="project-summary__meta">
+      {{ post.date | date: '%Y-%m-%d' }}
+      {% if post.tags and post.tags != empty %} · {{ post.tags | array_to_sentence_string }}{% endif %}
+    </p>
+    <a class="project-summary__link" href="{{ post.url }}">Read more</a>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<p class="text-muted">To be updated.</p>
+{% endif %}

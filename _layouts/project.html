@@ -1,0 +1,10 @@
+---
+layout: page
+---
+
+{% assign project = site.data.projects.projects | where: 'id', page.project_id | first %}
+{% if project %}
+  {% include projects/list.html project=project lang=page.lang %}
+{% else %}
+  <p class="text-muted">未找到对应项目配置。</p>
+{% endif %}

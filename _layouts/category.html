@@ -1,0 +1,14 @@
+---
+layout: page
+---
+<!-- 修改：新增分类归档页面布局 -->
+<h1 class="archive-title">分类：{{ page.title }}</h1>
+<ul class="archive-list">
+  {% assign posts = page.posts | default: site.categories[page.title] %}
+  {% for post in posts %}
+  <li>
+    <a href="{{ post.url }}">{{ post.title }}</a>
+    <span class="archive-date">{{ post.date | date: '%Y-%m-%d' }}</span>
+  </li>
+  {% endfor %}
+</ul>

@@ -1,0 +1,14 @@
+{% assign project_posts = site.categories[project.slug] %}
+{% if project_posts %}
+  {% assign project_posts = project_posts | where: 'lang', include.lang | where: 'panel_list', true | sort: 'panel_order' %}
+{% endif %}
+<article class="home-project">
+  <h3>{{ project.label }} · {{ project.subtitle }}</h3>
+  <p>{{ project.home_summary }}</p>
+  <ul>
+    {% for post in project_posts limit:2 %}
+    <li><a href="{{ post.url }}">{{ post.title }}</a></li>
+    {% endfor %}
+  </ul>
+  <a class="btn btn-primary rounded-pill" href="/{{ project.slug }}/">Enter {{ project.label }}</a>
+</article>

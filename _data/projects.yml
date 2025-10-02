@@ -1,0 +1,30 @@
+projects:
+  - id: project_1
+    slug: project-1
+    label: "Project 1"
+    nav_label: "P1"
+    icon: "fas fa-hdd"
+    subtitle: "Smart Storage"
+    home_summary: "Hardware storage proxy that arbitrates I/O commands—allow, rewrite, or block—driverless across major OSes."
+    hero_intro: "Hardware storage proxy that arbitrates I/O commands—allow, rewrite, or block—driverless across major OSes."
+    demo_video: 5epXNFNy9Dc
+    demo_link: https://youtu.be/5epXNFNy9Dc
+    posts: project_1
+  - id: project_2
+    slug: project-2
+    label: "Project 2"
+    nav_label: "P2"
+    icon: "fas fa-random"
+    subtitle: "Smart Access"
+    home_summary: ""
+    hero_intro: ""
+    posts: project_2
+  - id: project_3
+    slug: project-3
+    label: "Project 3"
+    nav_label: "P3"
+    icon: "fas fa-shield-alt"
+    subtitle: "Flow Control"
+    home_summary: ""
+    hero_intro: ""
+    posts: project_3

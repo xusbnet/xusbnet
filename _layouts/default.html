@@ -1,0 +1,238 @@
+---
+layout: compress
+---
+
+<!doctype html>
+
+{% include origin-type.html %}
+
+{% include lang.html %}
+
+{% if site.theme_mode %}
+  {% capture prefer_mode %}data-mode="{{ site.theme_mode }}"{% endcapture %}
+{% endif %}
+
+<!-- `site.alt_lang` can specify a language different from the UI -->
+<html lang="{{ page.lang | default: site.alt_lang | default: site.lang }}" {{ prefer_mode }}>
+  {% include head.html %}
+
+  <body{% if page.body_class %} class="{{ page.body_class }}"{% endif %}>
+    {% include sidebar.html lang=lang %}
+
+    <div id="main-wrapper" class="d-flex justify-content-center">
+      <div class="container d-flex flex-column px-xxl-5">
+        {% assign show_topbar = true %}
+        {% if page.show_topbar == false or layout.show_topbar == false %}
+          {% assign show_topbar = false %}
+        {% endif %}
+
+        {% if show_topbar %}
+          {% include topbar.html lang=lang %}
+        {% endif %}
+
+        {% if page.panel %}
+          {% assign panel_type = page.panel %}
+        {% elsif layout.panel %}
+          {% assign panel_type = layout.panel %}
+        {% else %}
+          {% assign panel_type = 'default' %}
+        {% endif %}
+
+        {% assign panel_includes = page.panel_includes | default: layout.panel_includes %}
+
+        {% assign has_panel = true %}
+        {% assign show_toc = false %}
+        {% assign has_extra_panel = false %}
+        {% assign has_articles = false %}
+        {% assign has_tags = false %}
+
+        {% if panel_includes %}
+          {% unless panel_includes == empty %}
+            {% assign has_extra_panel = true %}
+          {% endunless %}
+        {% endif %}
+
+        {% if panel_type == 'none' %}
+          {% assign has_panel = false %}
+        {% elsif panel_type == 'toc' %}
+          {% include toc-status.html %}
+          {% if enable_toc %}
+            {% assign show_toc = true %}
+          {% endif %}
+
+          {% unless show_toc or has_extra_panel %}
+            {% assign has_panel = false %}
+          {% endunless %}
+        {% elsif panel_type == 'articles' %}
+          {% if page.panel_pages and page.panel_pages != empty %}
+            {% assign has_articles = true %}
+          {% endif %}
+          {% if page.panel_collections and page.panel_collections != empty %}
+            {% for coll in page.panel_collections %}
+              {% assign docs = site[coll] | where_exp: 'doc', 'doc.panel_list != false' %}
+              {% if docs and docs != empty %}
+                {% assign has_articles = true %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+
+          {% unless has_articles or has_extra_panel %}
+            {% assign has_panel = false %}
+          {% endunless %}
+        {% elsif panel_type == 'tags' %}
+          {% if page.tags and page.tags != empty %}
+            {% assign has_tags = true %}
+          {% endif %}
+
+          {% unless has_tags or has_extra_panel %}
+            {% assign has_panel = false %}
+          {% endunless %}
+        {% endif %}
+
+        <div class="row flex-grow-1">
+          {% if has_panel %}
+            <main aria-label="Main Content" class="col-12 col-lg-11 col-xl-9 px-md-4">
+              {% if layout.refactor or layout.layout == 'default' %}
+                {% include refactor-content.html content=content lang=lang %}
+              {% else %}
+                {{ content }}
+              {% endif %}
+            </main>
+
+            <!-- panel -->
+            <aside aria-label="Panel" id="panel-wrapper" class="col-xl-3 ps-2 text-muted">
+              {% case panel_type %}
+                {% when 'toc' %}
+                  {% if show_toc %}
+                    {% include toc.html lang=lang %}
+                  {% endif %}
+                  {% for _include in panel_includes %}
+                    {% assign _include_path = _include | append: '.html' %}
+                    {% include {{ _include_path }} lang=lang %}
+                  {% endfor %}
+                {% when 'articles' %}
+                  {% if has_articles %}
+                    {% include panel/articles.html %}
+                  {% endif %}
+                  {% for _include in panel_includes %}
+                    {% assign _include_path = _include | append: '.html' %}
+                    {% include {{ _include_path }} lang=lang %}
+                  {% endfor %}
+                {% when 'tags' %}
+                  {% if has_tags %}
+                    {% include panel/tag-cloud.html %}
+                  {% endif %}
+                  {% for _include in panel_includes %}
+                    {% assign _include_path = _include | append: '.html' %}
+                    {% include {{ _include_path }} lang=lang %}
+                  {% endfor %}
+                {% else %}
+                  <div class="access">
+                    {% include_cached update-list.html lang=lang %}
+                    {% include_cached trending-tags.html lang=lang %}
+                  </div>
+
+                  {% for _include in panel_includes %}
+                    {% assign _include_path = _include | append: '.html' %}
+                    {% include {{ _include_path }} lang=lang %}
+                  {% endfor %}
+              {% endcase %}
+            </aside>
+          {% else %}
+            <main aria-label="Main Content" class="col-12 px-md-4">
+              {% if layout.refactor or layout.layout == 'default' %}
+                {% include refactor-content.html content=content lang=lang %}
+              {% else %}
+                {{ content }}
+              {% endif %}
+            </main>
+          {% endif %}
+        </div>
+
+        <div class="row">
+          <!-- tail -->
+          {% if has_panel %}
+            {% assign tail_class = 'col-12 col-lg-11 col-xl-9' %}
+          {% else %}
+            {% assign tail_class = 'col-12' %}
+          {% endif %}
+          <div id="tail-wrapper" class="{{ tail_class }} px-md-4">
+            {% for _include in layout.tail_includes %}
+              {% assign _include_path = _include | append: '.html' %}
+              {% include {{ _include_path }} lang=lang %}
+            {% endfor %}
+
+            {% include_cached footer.html lang=lang %}
+          </div>
+        </div>
+
+        {% include_cached search-results.html lang=lang %}
+
+        <!-- 修改：加载目录裁剪脚本，移除冒号后的说明文字 -->
+        <script>
+          (function () {
+            function trimTocEntries(toc) {
+              var links = toc.querySelectorAll('a');
+              if (!links.length) {
+                return false;
+              }
+              links.forEach(function (link) {
+                var text = link.textContent.trim();
+                if (!text) return;
+                var splitIndex = text.indexOf('：');
+                if (splitIndex === -1) {
+                  splitIndex = text.indexOf(':');
+                }
+                if (splitIndex > -1) {
+                  link.textContent = text.slice(0, splitIndex);
+                }
+              });
+              return true;
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+              var toc = document.getElementById('toc');
+              if (!toc) return;
+
+              if (trimTocEntries(toc)) {
+                return;
+              }
+
+              var observer = new MutationObserver(function () {
+                if (trimTocEntries(toc)) {
+                  observer.disconnect();
+                }
+              });
+
+              observer.observe(toc, { childList: true, subtree: true });
+            });
+          })();
+        </script>
+
+        
+      </div>
+
+      <aside aria-label="Scroll to Top">
+        <button id="back-to-top" type="button" class="btn btn-lg btn-box-shadow">
+          <i class="fas fa-angle-up"></i>
+        </button>
+      </aside>
+    </div>
+
+    <div id="mask" class="d-none position-fixed w-100 h-100 z-1"></div>
+
+    {% if site.pwa.enabled %}
+      {% include_cached notification.html lang=lang %}
+    {% endif %}
+
+    <!-- Embedded scripts -->
+
+    {% for _include in layout.script_includes %}
+      {% assign _include_path = _include | append: '.html' %}
+      {% include {{ _include_path }} %}
+    {% endfor %}
+
+    {% include_cached search-loader.html lang=lang %}
+  </body>
+</html>

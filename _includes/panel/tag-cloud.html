@@ -1,0 +1,15 @@
+{% assign tags = page.tags | uniq %}
+{% if tags and tags != empty %}
+<section class="panel-card card border-0 shadow-sm mt-3">
+  <div class="card-body">
+    <h3 class="h6 mb-3">TAG</h3>
+    <ul class="list-inline mb-0 panel-tag-list">
+      {% for tag in tags %}
+        <li class="list-inline-item mb-2">
+          <span class="badge rounded-pill panel-tag-badge">{{ tag }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
