@@ -30,9 +30,8 @@ summary: 通过底层扇区映射与容量回报改写，将单一存储虚拟�
 而这个过程最直观的结果，就是能将一个普通的U盘或SD卡，变为按照需要切割为多个在主机视角上彼此独立的磁盘。在我的原型机上，实现了4个独立的磁盘。
 
 
-<iframe src="//player.bilibili.com/player.html?aid=115288666283393&bvid=BV1pFnzzEExM&cid=32728416313&page=1&high_quality=1&danmaku=0&autoplay=0" allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" frameborder="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
-
-<p style="text-align:center">(演示视频：基本介绍和在Windows、macOS、Linux、iOS/iPadOS、Android平台的免驱动兼容性测试)</p>
+<iframe src="//player.bilibili.com/player.html?aid=115314419308382&bvid=BV13ZxpzAEiJ&cid=32830916522&page=1&high_quality=1&danmaku=0&autoplay=0" allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" frameborder="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
+<p style="text-align:center">(简要演示视频：基本介绍和在Windows、macOS、Linux、iOS/iPadOS、Android平台的免驱动兼容性测试，完整演示视频请看文章最后)</p>
 
 ## **B.一切始于一个问题:我们应该具有对存储设备的完全控制权**
 我们已经习惯了这样的流程：将U盘或SD卡等存储设备插入电脑，然后由操作系统完全接管。我们成了“第三方”，如果需要对存储设备进行管理，只能使用操作系统提供的上层工具去请求分区或在系统上安装安全软件。但这种模式意味着我们放弃了对硬件底层的控制权，不得不依赖日益复杂的主机端软件去解决那些本应由硬件来完成的任务——诸如数据隔离、多系统启动、安全防护等。这些软件方案既无法实现真正的控制，也称不上优雅，在某些场景下更是难以实施（例如无法在他人电脑上安装安全软件）。因此，我觉得有必要夺回对存储设备的真正控制权，便着手设计一个 **‘硬件代理’** ——USB控制器，用于管控主机（Host）发送给存储设备的指令。
@@ -107,3 +106,5 @@ USB控制器能够识别主机发送给存储设备的所有读写（I/O）指�
 ### **8.轻量化与效率**
 逻辑分盘方案的核心算法对CPU、存储资源的占用极小，可以高效地运行在微控制器（MCU，微控制单元，一种小型计算机芯片）上。（本控制器采用一颗120MHz的MCU实现USB 2.0 High-Speed传输。）。这意味着该技术不仅可以做成外置适配器，还可以 **作为IP核直接集成**到任何需要高级存储管理的嵌入式系统中——例如具备逻辑分盘功能的U盘、硬盘或存储芯片等。对于汽车或工业设备的设计者而言，可以利用单颗大容量存储芯片，安全地虚拟出彼此独立的固件区、日志区、用户数据区和黑匣子区，从而显著降低硬件BOM成本和设计复杂度。设计者甚至可以通过OTA等方式，远程动态配置额外的独立存储分区，却几乎不增加主控芯片的负担。
 
+<iframe src="//player.bilibili.com/player.html?aid=115288666283393&bvid=BV1pFnzzEExM&cid=32728416313&page=1&high_quality=1&danmaku=0&autoplay=0" allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" frameborder="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
+<p style="text-align:center">(完整演示视频：基本介绍和在Windows、macOS、Linux、iOS/iPadOS、Android平台的免驱动兼容性测试)</p>

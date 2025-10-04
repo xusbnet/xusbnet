@@ -28,8 +28,8 @@ summary: By rewriting capacity reports and remapping sectors at the lowest layer
 
 ## **A. Introduction**
 Today, I want to share the result of a long-standing obsession: a USB controller I built by hand. It does one thing, but that one thing matters—it gracefully takes back control of a storage device (its identity, every sector’s read/write permissions, and the data itself) **from the host and returns it to the device’s owner**. The most tangible outcome is that an ordinary USB flash drive or SD card can be sliced into multiple disks that appear completely separate to the host. On my prototype, I implemented four independent disks.
-{% include embed/youtube.html id='O8jIb7Wg9lM' autoplay=false title='Text' %}
-<p style="text-align:center">(overview and driver-free compatibility tests on Windows, macOS, Linux, iOS/iPadOS, and Android.)</p>
+{% include embed/youtube.html id='miWnRlo75NE' autoplay=false title='Text' %}
+<p style="text-align:center">(Logical Split Disk (LSDisk) - Mini Demo overview and driver-free compatibility tests on Windows, macOS, Linux, iOS/iPadOS, and Android. Full demo video at the end of the article.)</p>
 
 ## **B. It all began with one question: we should have full control over storage devices**
 We’re used to this flow: plug a USB drive or SD card into a computer and let the operating system take over. We become “third parties.” If we want to manage the device, we can only ask the OS for partitioning or install security software. That model surrenders low-level hardware control and forces increasingly complex host-side software to do work the hardware should do—data isolation, multi-boot, and protection. These software solutions don’t offer real control, are hardly elegant, and can be impractical (e.g., you can’t install security software on someone else’s computer). So I set out to reclaim true control by designing a **“hardware proxy”**—a USB controller that governs the commands a host sends to the storage device.
@@ -95,3 +95,7 @@ LEDs expose low-level I/O in real time: blue = idle, green = reading (e.g., SCSI
 The controller only allows standard Mass-Storage-Class devices. Attempts to masquerade as non-MSC (e.g., a keyboard via HID injecting malicious commands—classic **BadUSB**) are rejected; the LED alternates blue/red as a warning. (Note: command-level control allows the controller to act as a BadUSB detector/guard.)
 ### **8. Lightweight and efficient**
 The core algorithms use minimal CPU and memory, running efficiently on an MCU (microcontroller unit). This prototype uses a 120 MHz MCU and supports USB 2.0 High-Speed. The design can be an external adapter or **an IP core integrated into** embedded systems—U-disks, HDD/SSD controllers, or storage chips. Automotive/industrial designers can carve one large chip into independent firmware, logs, user data, and black-box regions—cutting BOM (bill of materials) cost and complexity. Additional logical regions can even be provisioned remotely via OTA (over-the-air) with negligible load on the main SoC.
+
+{% include embed/youtube.html id='O8jIb7Wg9lM' autoplay=false title='Text' %}
+<p style="text-align:center">(Full demo video.
+overview and driver-free compatibility tests on Windows, macOS, Linux, iOS/iPadOS, and Android.)</p>
